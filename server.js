@@ -3,6 +3,8 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const fs = require("fs");
 
+require("dotenv").config()
+
 const app = express();
 
 app.use(helmet());
@@ -44,4 +46,4 @@ app.get('/products/random', (req, res) => {
     res.json(product)
 })
 
-app.listen('6969')
+app.listen(process.env.PORT || 6969)
