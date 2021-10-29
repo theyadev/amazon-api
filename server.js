@@ -11,7 +11,7 @@ app.use(helmet());
 app.use(morgan("short"));
 
 function filterProducts(params) {
-    let products = JSON.parse(fs.readFileSync('./amazon.json', {encoding: 'utf8'}));
+    let products = JSON.parse(fs.readFileSync('./items.json', {encoding: 'utf8'}));
 
     if (params?.price) {
         products = products.filter(product => product.prix == params.price)
@@ -28,7 +28,7 @@ function filterProducts(params) {
     return products
 }
 
-app.get('/products', (req, res) => {
+app.get('/items', (req, res) => {
     const params = req.query
 
     const products = filterProducts(params)
@@ -36,7 +36,7 @@ app.get('/products', (req, res) => {
     res.json(products)
 })
 
-app.get('/products/random', (req, res) => {
+app.get('/items/random', (req, res) => {
     const params = req.query
 
     const products = filterProducts(params)
@@ -46,4 +46,8 @@ app.get('/products/random', (req, res) => {
     res.json(product)
 })
 
-app.listen(process.env.PORT || 6969)
+
+PORT = process.env.PORT || 6969
+
+console.log("Serveur démarré sur le port: " + PORT);
+app.listen(PORT)

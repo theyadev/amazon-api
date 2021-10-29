@@ -1,3 +1,5 @@
 chromedriver.exe
 node_modules
 .env
+*.json
+__pycache__
