@@ -8,8 +8,6 @@ const app = express();
 app.use(helmet());
 app.use(morgan("short"));
 
-// C'est pour le retiré de git
-
 function filterProducts(params) {
     let products = JSON.parse(fs.readFileSync('./amazon.json', {encoding: 'utf8'}));
 
