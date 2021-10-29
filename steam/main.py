@@ -2,7 +2,8 @@ import requests
 import sys
 import json
 
-sys.path.append(r"C:\Users\stagiaire.PORT-20B-11.000\Documents\amazon-api")
+
+sys.path.append('./')
 
 from addToJson import addToJSON
 
