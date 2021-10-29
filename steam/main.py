@@ -47,11 +47,12 @@ def fetchGames():
             price = float(data[str(game['appid'])]['data']['price_overview']['final_formatted'].replace(
                 '€', "").replace("\u00a0", "").replace('\u202f', "").replace(",", "."))
 
-            print(name)
-            print(game["price"], price)
-            print(image_url)
+            res = addToJSON(name, price, image_url)
 
-            addToJSON(name, price, image_url)
+            if res == True:
+                print(name)
+                print(price)
+                print(image_url)
         except:
             pass
 

@@ -37,11 +37,12 @@ def fetchFromAmazon(query):
 
             image_url = product_div.find("img")['src']
 
-            print(name)
-            print(price)
-            print(image_url)
+            res = addToJSON(name, price, image_url)
 
-            addToJSON(name, price, image_url)
+            if res == True:
+                print(name)
+                print(price)
+                print(image_url)
         except:
             pass
 
