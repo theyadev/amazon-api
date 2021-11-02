@@ -1,48 +1,46 @@
 from bs4 import BeautifulSoup
+
 from selenium import webdriver
-import time
+from selenium.webdriver.chrome.options import Options
+
 import sys
 
 sys.path.append('./')
 
 from addToJson import addToJSON
+from priceToFloat import priceToFloat
 
 
 def fetchFromAmazon(query):
     url = f'https://www.amazon.fr/s?k={query}'
+
     driver = None
 
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+
     try:
-        driver = webdriver.Chrome('./chromedriver')
+        driver = webdriver.Chrome('./chromedriver', options=chrome_options)
     except:
-        driver = webdriver.Chrome('./amazon scrapping/chromedriver')
+        driver = webdriver.Chrome(
+            './amazon scrapping/chromedriver', options=chrome_options)
 
     driver.get(url)
 
-    time.sleep(1)
-
     soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-    catalog_div = soup.find(class_='s-matching-dir').find(class_="sg-col-inner").find_all(
-        "span")[2].findChildren(recursive=False)[1].find_all(class_="s-result-item")
+    catalog_div = soup.find_all(class_="s-result-item")
 
     for product_div in catalog_div:
         try:
-            nom = product_div.find("h2").text
-            prix_str = product_div.find(class_='a-offscreen').text
+            price_str = product_div.find(class_='a-offscreen').text
+            price = priceToFloat(price_str)
 
-            name = nom.strip()
-            price = float(prix_str.replace('€', "").replace(
-                "\u00a0", "").replace('\u202f', "").replace(",", "."))
+            name = product_div.find("h2").text.strip()
 
             image_url = product_div.find("img")['src']
 
-            res = addToJSON(name, price, image_url)
-
-            if res == True:
-                print(name)
-                print(price)
-                print(image_url)
+            addToJSON(name, price, image_url)
         except:
             pass
 

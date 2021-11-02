@@ -5,19 +5,19 @@ import sys
 sys.path.append('./')
 
 from addToJson import addToJSON
+from priceToFloat import priceToFloat
 
 
-def fetchAPI():
+def fetchGames() -> dict:
     res = requests.get("https://steamspy.com/api.php?request=all")
     return res.json()
 
 
-def convertToCent(number):
+def convertToCent(number: int) -> str:
     return '{:,.2f}'.format(number / 100)
 
 
-def fetchGames():
-    games = fetchAPI()
+def fetchGamesPrice(games: dict) -> dict:
     ids = [id for id in games.keys()]
 
     data = {}
@@ -32,33 +32,43 @@ def fetchGames():
 
     data.update(res.json())
 
-    for id, game in games.items():
+    return data
+
+
+def getImageUrl(id: int) -> str:
+    return f"https://cdn.akamai.steamstatic.com/steam/apps/{id}/header.jpg"
+
+def updateGamesToJSON():
+    games = fetchGames()
+
+    games_prices = fetchGamesPrice(games)
+
+    for game in games.values():
         try:
-            name = game['name']
-            price = float(convertToCent(int(game["price"])))
-            image_url = f"https://cdn.akamai.steamstatic.com/steam/apps/{game['appid']}/header.jpg"
+            name: str = game['name']
 
-            if price == 0:
+            not_updated_price = float(convertToCent(int(game["price"])))
+
+            image_url = getImageUrl(game['appid'])
+
+            if not_updated_price == 0:
                 continue
 
-            if data[str(game['appid'])]['data'] == []:
+            if games_prices[str(game['appid'])]['data'] == []:
                 continue
 
-            price = float(data[str(game['appid'])]['data']['price_overview']['final_formatted'].replace(
-                '€', "").replace("\u00a0", "").replace('\u202f', "").replace(",", "."))
+            price_str: str = games_prices[str(
+                game['appid'])]['data']['price_overview']['final_formatted']
 
-            res = addToJSON(name, price, image_url)
+            price = priceToFloat(price_str)
 
-            if res == True:
-                print(name)
-                print(price)
-                print(image_url)
+            addToJSON(name, price, image_url, "game")
         except:
-            pass
+            continue
 
 
 def main():
-    fetchGames()
+    updateGamesToJSON()
 
 
 if __name__ == "__main__":

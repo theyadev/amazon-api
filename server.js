@@ -2,6 +2,8 @@ const express = require("express");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const fs = require("fs");
+const spawn = require("child_process").spawn;
+
 
 require("dotenv").config()
 
@@ -9,6 +11,7 @@ const app = express();
 
 app.use(helmet());
 app.use(morgan("short"));
+app.use(express.json())
 
 function filterProducts(params) {
     let products = JSON.parse(fs.readFileSync('./items.json', {encoding: 'utf8'}));
@@ -44,6 +47,22 @@ app.get('/items/random', (req, res) => {
     const product = products[Math.floor(Math.random() * products.length)]
 
     res.json(product)
+})
+
+app.post('/items/amazon', (req, res) => {
+    if (req.body?.search && req.body?.password == "password") {
+        const python = spawn("python", ["./amazon scrapping/script.py", req.body.search]);
+
+        python.stdout.on("data", function (data) {
+            res.status(200).send({
+                "status": "OK"
+            })
+        });
+
+        
+        return
+    }
+    res.send("pasok")
 })
 
 
