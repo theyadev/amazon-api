@@ -40,7 +40,7 @@ def fetchFromAmazon(query):
 
             image_url = product_div.find("img")['src']
 
-            addToJSON(name, price, image_url)
+            addToJSON(name, price, image_url, "amazon")
         except:
             pass
 

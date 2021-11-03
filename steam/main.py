@@ -27,10 +27,10 @@ def fetchGamesPrice(games: dict) -> dict:
 
     data.update(res.json())
 
-    res = requests.get(
-        f"https://store.steampowered.com/api/appdetails?filters=price_overview&appids={','.join(ids[501:])}")
+    # res = requests.get(
+    #     f"https://store.steampowered.com/api/appdetails?filters=price_overview&appids={','.join(ids[501:])}")
 
-    data.update(res.json())
+    # data.update(res.json())
 
     return data
 

@@ -49,6 +49,10 @@ app.get('/items/random', (req, res) => {
     res.json(product)
 })
 
+app.get('/categories', (req, res) => {
+    res.json(["game", "amazon"])
+})
+
 app.post('/items/amazon', (req, res) => {
     if (req.body?.search && req.body?.password == "password") {
         const python = spawn("python", ["./amazon scrapping/script.py", req.body.search]);
